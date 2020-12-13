@@ -1,21 +1,27 @@
-<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
-    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script defer src="script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <title>Code Quiz</title>
+   
 </head>
+
 <body>
+    <div class="card text-center  padding-top: 50px;">
+        <div class="card-body">
+            <h5 class="card-title">Code Quiz</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Lets see what you know!</h6>
+            <div id="question" class="card-title">Press the start button to play</div>
+            <button class="btn btn-primary btn-large" id="startbtn">Start</button>
+            <div id="results" class="btnGrid"></div>
+        </div>
+    </div>
 
-
-
-
-
-<div id="quiz"></div>
-<button id="submit">Get Results</button>
-<div id="results"></div>
 
 </body>
-</html>
+<script src="script.js"></script>

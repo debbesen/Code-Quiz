@@ -1,114 +1,138 @@
-var quizContainer = document.getElementById('quiz');
-var resultsContainer = document.getElementById('results');
-var submitButton = document.getElementById('submit');
+var question = document.getElementById('question');
+var answers = document.getElementById('results');
+const startButton = document.getElementById('startbtn');
 
-const myQuestions = [
+
+let score = 0;
+//Timer
+let timeRemaining = 60;
+let currentQuestion = 0;
+
+//listen for game start
+startButton.addEventListener('click', startGame);
+//hide answers
+answers.style.visibility = 'hidden';
+
+function startGame() {
+    setTime();
+    alert('The game has started');
+    startButton.style.visibility = 'hidden';
+    answers.style.visibility = 'visible';
+    setQuestion();
+}
+
+function setQuestion() {
+    //Checks if its time to end the game
+    if (currentQuestion == questions.length) {
+        endGame();
+    }
+    //create the question
+    question.innerText = questions[currentQuestion].questionText;
+   
+
+    let answerButton1 = $("<button>");
+    answerButton1.attr("id", "button1");
+    let answerButton2 = $("<button>");
+    answerButton2.attr("id", "button2");
+    let answerButton3 = $("<button>");
+    answerButton3.attr("id", "button3");
+    let answerButton4 = $("<button>");
+    answerButton4.attr("id", "button4");
+    
+    //adds text from questions object
+
+    answerButton1.text(questions[currentQuestion].answers[0]);
+    answerButton2.text(questions[currentQuestion].answers[1]);
+    answerButton3.text(questions[currentQuestion].answers[2]);
+    answerButton4.text(questions[currentQuestion].answers[3]);
+
+    //append
+    $("#results").append(answerButton1);
+    $("#results").append(answerButton2);
+    $("#results").append(answerButton3);
+    $("#results").append(answerButton4);
+
+    //events
+    $("#button1").on("click", function (e) {
+        answerChecker(questions[currentQuestion].answers[0])
+    });
+    $("#button2").on("click", function (e) {
+        answerChecker(questions[currentQuestion].answers[1])
+    });
+    $("#button3").on("click", function (e) {
+        answerChecker(questions[currentQuestion].answers[2])
+    });
+    $("#button4").on("click", function (e) {
+        answerChecker(questions[currentQuestion].answers[3])
+    });
+
+}
+
+function answerChecker(selection) {
+
+    if (questions[currentQuestion].correctAnswer == selection) {
+        score++;
+        alert("Correct! Your current score: " + score)
+        currentQuestion++;
+        clear();
+        setQuestion();
+        console.log(score)
+    }
+    else {
+        alert("Incorrect! Try again.")
+        timeRemaining -= 10;
+    }
+}
+
+//clears the elements
+function clear() {
+    $("#results").empty();
+}
+
+//set time 
+function setTime() {
+    let timerInterval = setInterval(function () {
+        timeRemaining--;
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval)
+            return endGame();
+        }
+    }, 1000);
+}
+
+//end game 
+function endGame() {
+    alert(`Game Over! Your score: ${score}`)
+    let userName = window.prompt("Enter your name: ");
+    localStorage.setItem(userName, score);
+    location.reload();
+}
+
+//restart
+function restart() {
+    timeRemaining = 60;
+    currentQuestion = 1;
+    score = 0;
+    startGame();
+}
+const questions = [
   {
     question: "Who invented JavaScript?",
-    answers: {
-      a: "Douglas Crockford",
-      b: "Sheryl Sandberg",
-      c: "Brendan Eich"
+    answers: ["Douglas Crockford", "Sheryl Sandberg", "Brendan Eich"],
+    correctAnswer: "Brendan Eich",
+
     },
-    correctAnswer: "c"
-  },
+    
   {
     question: "Which one of these is a JavaScript package manager?",
-    answers: {
-      a: "Node.js",
-      b: "TypeScript",
-      c: "npm"
+    answers: [ "Node.js", "TypeScript", "npm"],
+    correctAnswer: "npm",
     },
-    correctAnswer: "c"
-  },
+   
   {
     question: "Which tool can you use to ensure code quality?",
-    answers: {
-      a: "Angular",
-      b: "jQuery",
-      c: "RequireJS",
-      d: "ESLint"
+    answers: [ "Angular", "jQuery", "RequireJS", "ESLint"],
+    correctAnswer: "ESLint"  
     },
-    correctAnswer: "d"
-  }
-];
-
-function generateQuiz(questions, quizContainer, resultsContainer, submitButton){
-
-	function showQuestions(questions, quizContainer){
     
-    // code will go here
-  
-	var output = [];
-	var answers;
-
-	// for each question...
-	for(var i=0; i<questions.length; i++){
-		
-		// first reset the list of answers
-		answers = [];
-
-		// for each available answer to this question...
-		for(letter in questions[i].answers){
-
-			// ...add an html radio button
-			answers.push(
-				'<label>'
-					+ '<input type="radio" name="question'+i+'" value="'+letter+'">'
-					+ letter + ': '
-					+ questions[i].answers[letter]
-				+ '</label>'
-			);
-		}
-
-		output.push(
-			'<div class="question">' + questions[i].question + '</div>'
-			+ '<div class="answers">' + answers.join('') + '</div>'
-		);
-	}
-
-	// finally combine our output list into one string of html and put it on the page
-	quizContainer.innerHTML = output.join('');
-}
-	}
-
-	function showResults(questions, quizContainer, resultsContainer){
-    var answerContainers = quizContainer.querySelectorAll('.answers');
-	
-    // keep track of user's answers
-    var userAnswer = '';
-    var numCorrect = 0;
-    
-    for(var i=0; i<questions.length; i++){
-  
-      // find selected answer
-      userAnswer = (answerContainers[i].querySelector('input[name=question'+i+']:checked')||{}).value;
-      
-      // if answer is correct
-      if(userAnswer===questions[i].correctAnswer){
-        // add to the number of correct answers
-        numCorrect++;
-        
-     
-        answerContainers[i].style.color = 'lightgreen';
-      }
-     
-      else{
-       
-        answerContainers[i].style.color = 'red';
-      }
-    }
-  
-    // show number of correct answers out of total
-    resultsContainer.innerHTML = numCorrect + ' out of ' + questions.length;
-  }
-	
-
-	// show the questions
-  showQuestions(questions, quizContainer)
-  console.log(showQuestions);
-
-	// when user clicks submit, show results
-	submitButton.onclick = function(){
-		showResults(questions, quizContainer, resultsContainer);
-	}
+]
